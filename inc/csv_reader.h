@@ -1,6 +1,7 @@
 #ifndef CSV_READER_H_DEFINED
 #define CSV_READER_H_DEFINED
 #include <string>
+#include <timer.h>
 
 class csv_reader
 {
