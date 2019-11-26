@@ -12,6 +12,7 @@ timer::timer(float FPSmax)
         this->minPeriod = 1 / FPSmax;
     else
         this->minPeriod = 0;
+    this->previousTime = VERY_NEGATIVE;
     this->update();
 }
 
@@ -30,6 +31,11 @@ void timer::update()
 double timer::getElapsedTime()
 {
     return this->elapsedTime;
+}
+
+double timer::getTime()
+{
+    return this->previousTime;
 }
 
 event_timer::event_timer(double period)

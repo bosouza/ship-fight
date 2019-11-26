@@ -11,6 +11,7 @@ public:
     timer(float FPSmax);
     ~timer() {}
     void update();
+    double getTime();
     double getElapsedTime();
 };
 
