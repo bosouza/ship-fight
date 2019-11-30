@@ -1,15 +1,19 @@
-#ifndef CSV_READER_H_DEFINED
-#define CSV_READER_H_DEFINED
+#ifndef TILE_MAP_H_DEFINED
+#define TILE_MAP_H_DEFINED
 #include <string>
 #include <timer.h>
+#include <common.h>
 
-class csv_reader
+class tile_map
 {
 private:
 public:
-    csv_reader(std::string);
-    int get(unsigned int line, unsigned int column);
-    int getXY(unsigned int x, unsigned int y);
-    ~csv_reader();
+    tile_map(timer &t);
+    tileID get(unsigned int line, unsigned int column);
+    tileID getXY(unsigned int x, unsigned int y);
+    tileProperties getProperties(tileID);
+    unsigned int getWidth();
+    unsigned int getHeight();
+    ~tile_map();
 };
 #endif
