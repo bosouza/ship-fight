@@ -46,7 +46,6 @@ std::string testCompileProgram(unsigned int program)
     int success;
     char infoLog[512];
     glGetProgramiv(program, GL_COMPILE_STATUS, &success);
-    std::cout << "success: " << success << std::endl;
     if (!success)
     {
         glGetProgramInfoLog(program, 512, NULL, infoLog);
@@ -62,7 +61,6 @@ std::string testCompileProgram(unsigned int program)
 //     int success;
 //     char infoLog[512];
 //     glGetProgramiv(program, GL_COMPILE_STATUS, &success);
-//     std::cout << "success: " << success << std::endl;
 //     if (!success)
 //     {
 //         glGetProgramInfoLog(program, 512, NULL, infoLog);
