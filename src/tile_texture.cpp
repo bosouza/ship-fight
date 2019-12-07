@@ -30,7 +30,7 @@ tile_texture::tile_texture(std::string path, int wQtd, int hQtd) : tex(path)
     this->tileHeight = this->tex.getHeight() / hQtd;
 
     this->shader = &tile_shader::get_instance();
-    texture_mapping textureMapping = createTextureMapping(1.0f / (float)this->wQtd, 1.0f / (float)this->tileHeight);
+    texture_mapping textureMapping = createTextureMapping(1.0f / (float)this->wQtd, 1.0f / (float)this->hQtd);
     this->textureID = this->shader->newDiamondTexture(textureMapping, this->tex);
     this->tex.freeData();
 }
