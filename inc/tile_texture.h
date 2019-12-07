@@ -5,6 +5,12 @@
 #include <tile_shader.h>
 #include <common.h>
 
+typedef enum
+{
+    square,
+    diamond,
+} shape;
+
 class tile_texture
 {
 private:
@@ -16,7 +22,8 @@ private:
 public:
     // path is the path for the image to be loaded, wQtd and hQtd are the
     // number of tiles along the width and height lengths, respectively.
-    tile_texture(std::string path, int wQtd, int hQtd);
+    // s is the shape to be drawn
+    tile_texture(std::string path, int wQtd, int hQtd, shape s, float width, float height);
     ~tile_texture(){};
     void draw(tileID tile, NDC pos);
 };

@@ -24,14 +24,13 @@ private:
     unsigned int
         shaderProgramID,
         EBO,
-        diamondVBO, squareVBO,
         positionXLocation, positionYLocation,
         offsetXLocation, offsetYLocation;
     std::vector<textureData> textures;
 
 public:
-    unsigned int newDiamondTexture(texture_mapping mapping, texture &tex);
-    unsigned int newSquareTexture(texture_mapping mapping, texture &tex);
+    unsigned int newDiamondTexture(texture_mapping mapping, texture &tex, float width, float height);
+    unsigned int newRectangularTexture(texture_mapping mapping, texture &tex, float width, float height);
     void bindTexture(unsigned int textureID);
     void draw();
     void setOriginPosition(NDC originPosition);

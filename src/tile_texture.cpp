@@ -4,7 +4,7 @@
 
 texture_mapping createTextureMapping(float width, float height);
 
-tile_texture::tile_texture(std::string path, int wQtd, int hQtd) : tex(path)
+tile_texture::tile_texture(std::string path, int wQtd, int hQtd, shape s, float width, float height) : tex(path)
 {
     if (wQtd < 1 || hQtd < 1)
     {
@@ -31,7 +31,18 @@ tile_texture::tile_texture(std::string path, int wQtd, int hQtd) : tex(path)
 
     this->shader = &tile_shader::get_instance();
     texture_mapping textureMapping = createTextureMapping(1.0f / (float)this->wQtd, 1.0f / (float)this->hQtd);
-    this->textureID = this->shader->newDiamondTexture(textureMapping, this->tex);
+    switch (s)
+    {
+    case diamond:
+        this->textureID = this->shader->newDiamondTexture(textureMapping, this->tex, width, height);
+        break;
+    case square:
+        this->textureID = this->shader->newRectangularTexture(textureMapping, this->tex, width, height);
+        break;
+    default:
+        std::cout << "unsupported shape" << std::endl;
+        throw;
+    }
     this->tex.freeData();
 }
 
