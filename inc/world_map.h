@@ -3,11 +3,7 @@
 #include <tile_texture.h>
 #include <glm/glm.hpp>
 #include <tile_map.h>
-
-struct world_coordinates
-{
-    float x, y;
-};
+#include <common.h>
 
 class world_map
 {

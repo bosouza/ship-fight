@@ -18,19 +18,23 @@ world_map::world_map(float tileWidth, float tileHeight, timer *t)
 
 void world_map::draw(world_coordinates center)
 {
-    float fractionalX = std::modf(center.x - 0.5f, nullptr);
-    float fractionalY = std::modf(center.y - 0.5f, nullptr);
+    float fractionalX = std::modf(center.x, nullptr);
+    float fractionalY = std::modf(center.y, nullptr);
+    // we have to draw it centered (i.e. draw centered in [0,0] if the center position
+    // received is in the center of the tile)
+    fractionalX -= 0.5f;
+    fractionalY -= 0.5f;
     int startIndex = -std::ceil((float)this->diagonalQtd / 2.0f);
     int endIndex = std::ceil((float)this->diagonalQtd / 2.0f);
     for (int x = startIndex; x < endIndex; x++)
     {
-        if (center.x + x < 0)
+        if (center.x + x < 0 || center.x + x >= map.getWidth())
             continue;
         for (int y = startIndex; y < endIndex; y++)
         {
-            if (center.y + y < 0)
+            if (center.y + y < 0 || center.y + y >= map.getHeight())
                 continue;
-            glm::vec2 offset = this->worldToNDC * glm::vec2(fractionalX + x, fractionalY + y);
+            glm::vec2 offset = this->worldToNDC * glm::vec2(x - fractionalX, y - fractionalY);
             this->tile.draw(map.getXY(center.x + x, center.y + y), NDC{x : offset[0], y : offset[1]});
         }
     }

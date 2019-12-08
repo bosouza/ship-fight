@@ -4,6 +4,10 @@
 #include <cstdio>
 #include <util_opengl.h>
 
+struct world_coordinates
+{
+    float x, y;
+};
 struct tileID
 {
     unsigned int line, column;
@@ -20,12 +24,6 @@ struct texture_mapping
     NDC upper_left;
     NDC upper_right;
     NDC bottom_right;
-};
-
-struct Position2D
-{
-    float x;
-    float y;
 };
 
 #endif
