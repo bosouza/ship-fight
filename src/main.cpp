@@ -9,7 +9,7 @@
 #include <timer.h>
 #include <world_map.h>
 
-#define WINDOW_WIDTH 500
+#define WINDOW_WIDTH 1000
 #define WINDOW_HEIGHT 500
 
 #define DIAMOND_TILE_WIDTH 0.2f
@@ -18,17 +18,20 @@
 #define SQUARE_TILE_SIZE 0.25f
 
 using namespace std;
+void framebuffer_size_callback(GLFWwindow *window, int width, int height);
+void processInput(GLFWwindow *window);
 
-void framebuffer_size_callback(GLFWwindow *window, int width, int height)
-{
-    glViewport(0, 0, width, height);
-}
-
-void processInput(GLFWwindow *window)
-{
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-}
+viewport viewports[] = {
+    {
+        lowerLeftCorner : {0, 0},
+        width : WINDOW_WIDTH / 2,
+        height : WINDOW_HEIGHT,
+    },
+    {
+        lowerLeftCorner : {(WINDOW_WIDTH / 2) + 1, 0},
+        width : WINDOW_WIDTH / 2,
+        height : WINDOW_HEIGHT,
+    }};
 
 int main()
 {
@@ -72,9 +75,33 @@ int main()
         processInput(window);
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-        world.draw(world_coordinates{10.0f, 50.0f});
+        for (auto view : viewports)
+        {
+            bindViewport(view);
+            world.draw(world_coordinates{10.0f, 50.0f});
+        }
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
     glfwTerminate();
+}
+
+void framebuffer_size_callback(GLFWwindow *window, int width, int height)
+{
+    viewports[0] = viewport{
+        lowerLeftCorner : {0, 0},
+        width : width / 2,
+        height : height
+    };
+    viewports[1] = viewport{
+        lowerLeftCorner : {(width / 2) + 1, 0},
+        width : width / 2,
+        height : height
+    };
+}
+
+void processInput(GLFWwindow *window)
+{
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
 }
