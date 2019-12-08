@@ -29,7 +29,7 @@ tileID tile_map::get(unsigned int line, unsigned int column){
     unsigned int tile = this->tilesScenario[line][column];
 
     if(this->tsx.tileList[tile].hasAnimation){
-        double elapsedAnimation = fmod(this->t->getElapsedTime(),this->tsx.tileList[tile].period);
+        double elapsedAnimation = fmod(this->t->getTime() * 1000,this->tsx.tileList[tile].period);
         unsigned int frame = 0;
         while((elapsedAnimation = elapsedAnimation - this->tsx.tileList[tile].animation_tile_id_duration[frame])>=0){
             frame++;
