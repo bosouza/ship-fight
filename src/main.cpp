@@ -39,6 +39,7 @@ viewport viewports[] = {
 
 game_entity player[] = {game_entity(20, 50, 0, 0, 0),
                         game_entity(25, 55, 0, 0, 0)};
+tileID playerAction[] = {tileID{0, 0}, tileID{0, 0}};
 
 int main()
 {
@@ -93,7 +94,17 @@ int main()
         for (int i = 0; i < 2; i++)
         {
             bindViewport(viewports[i]);
+            //1º: draw background
             world.draw(world_coordinates{player[i].position.x, player[i].position.y});
+            //2º: draw ships
+            if (i == 0)
+            {
+                ghostShipTile.draw(playerAction[0], NDC{0, 0});
+            }
+            else
+            {
+                pirateShipTile.draw(playerAction[1], NDC{0, 0});
+            }
         }
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -125,41 +136,49 @@ void processInput(GLFWwindow *window)
     {
         player[0].speed = SHIP_SPEED;
         player[0].angle = 3 * PI / 4;
+        playerAction[0] = tileID{3, 0};
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
         player[0].speed = SHIP_SPEED;
         player[0].angle = 5 * PI / 4;
+        playerAction[0] = tileID{1, 0};
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
         player[0].speed = SHIP_SPEED;
         player[0].angle = 7 * PI / 4;
+        playerAction[0] = tileID{0, 0};
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
         player[0].speed = SHIP_SPEED;
         player[0].angle = 1 * PI / 4;
+        playerAction[0] = tileID{2, 0};
     }
     player[1].speed = 0;
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
     {
         player[1].speed = SHIP_SPEED;
         player[1].angle = 3 * PI / 4;
+        playerAction[1] = tileID{3, 0};
     }
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
     {
         player[1].speed = SHIP_SPEED;
         player[1].angle = 5 * PI / 4;
+        playerAction[1] = tileID{1, 0};
     }
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
     {
         player[1].speed = SHIP_SPEED;
         player[1].angle = 7 * PI / 4;
+        playerAction[1] = tileID{0, 0};
     }
     if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
     {
         player[1].speed = SHIP_SPEED;
         player[1].angle = 1 * PI / 4;
+        playerAction[1] = tileID{2, 0};
     }
 }
