@@ -9,6 +9,8 @@ private:
     tile_texture tex;
     unsigned int currentAction;
     float period;
+    timer *t;
+    int frameQtd;
 
 public:
     ship_sprite(std::string path, int frameQtd, int actionQtd, float width, float height, float period, timer *t);
