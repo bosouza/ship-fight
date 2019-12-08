@@ -13,12 +13,6 @@
 #define OFFSET_X_UNIFORM "offsetx"
 #define OFFSET_Y_UNIFORM "offsety"
 
-//diamond tile size
-#define DIAMOND_TILE_WIDTH 0.25f
-#define DIAMOND_TILE_HEIGHT 0.15f
-
-#define SQUARE_TILE_SIZE 0.25f
-
 //size of the buffer containing the NDC coordinates for the shapes. No sense changing this without adding more points
 #define VERTEX_DATA_BUFFER_SIZE 12
 
@@ -50,16 +44,6 @@ tile_shader::tile_shader()
     this->offsetXLocation = glGetUniformLocation(p, OFFSET_X_UNIFORM);
     this->offsetYLocation = glGetUniformLocation(p, OFFSET_Y_UNIFORM);
 
-    // create VBO for the "diamond" shape, bind the buffer data
-    float diamondShapeBuffer[VERTEX_DATA_BUFFER_SIZE];
-    fillDiamondShapeBuffer(diamondShapeBuffer, DIAMOND_TILE_WIDTH, DIAMOND_TILE_HEIGHT);
-    this->diamondVBO = createVBO(diamondShapeBuffer, VERTEX_DATA_BUFFER_SIZE);
-
-    //create VBO for the square shape, bind the buffer data
-    float squareShapeBuffer[VERTEX_DATA_BUFFER_SIZE];
-    fillRectangleShapeBuffer(squareShapeBuffer, SQUARE_TILE_SIZE, SQUARE_TILE_SIZE);
-    this->squareVBO = createVBO(squareShapeBuffer, VERTEX_DATA_BUFFER_SIZE);
-
     //create EBO.
     unsigned int indices[] = {
         0, 1, 3,
@@ -74,14 +58,20 @@ tile_shader::~tile_shader()
     //TODO: cleanup shader resources
 }
 
-unsigned int tile_shader::newDiamondTexture(texture_mapping mapping, texture &tex)
+unsigned int tile_shader::newDiamondTexture(texture_mapping mapping, texture &tex, float width, float height)
 {
-    return newDefaultVAO(mapping, tex, this->diamondVBO);
+    float diamondShapeBuffer[VERTEX_DATA_BUFFER_SIZE];
+    fillDiamondShapeBuffer(diamondShapeBuffer, width, height);
+    unsigned int diamondVBO = createVBO(diamondShapeBuffer, VERTEX_DATA_BUFFER_SIZE);
+    return newDefaultVAO(mapping, tex, diamondVBO);
 }
 
-unsigned int tile_shader::newSquareTexture(texture_mapping mapping, texture &tex)
+unsigned int tile_shader::newRectangularTexture(texture_mapping mapping, texture &tex, float width, float height)
 {
-    return newDefaultVAO(mapping, tex, this->squareVBO);
+    float squareShapeBuffer[VERTEX_DATA_BUFFER_SIZE];
+    fillRectangleShapeBuffer(squareShapeBuffer, width, height);
+    unsigned int squareVBO = createVBO(squareShapeBuffer, VERTEX_DATA_BUFFER_SIZE);
+    return newDefaultVAO(mapping, tex, squareVBO);
 }
 
 unsigned int tile_shader::newDefaultVAO(texture_mapping mapping, texture &tex, unsigned int positionVBO)
