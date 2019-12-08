@@ -7,11 +7,12 @@
 #include <tile_texture.h>
 #include <util_opengl.h>
 #include <timer.h>
+#include <world_map.h>
 
-#define WINDOW_WIDTH 1000
+#define WINDOW_WIDTH 500
 #define WINDOW_HEIGHT 500
 
-#define DIAMOND_TILE_WIDTH 0.25f
+#define DIAMOND_TILE_WIDTH 0.2f
 #define DIAMOND_TILE_HEIGHT 0.15f
 
 #define SQUARE_TILE_SIZE 0.25f
@@ -60,24 +61,18 @@ int main()
 
     glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-    //create the tile_texture for the main tile set
-    tile_texture avalonTile("./texture/avalon.png", 27, 24, diamond, DIAMOND_TILE_WIDTH, DIAMOND_TILE_HEIGHT);
-
     tile_texture ghostShipTile("./texture/ghost-ship-4-perspectives-transparent.png", 4, 4, square, SQUARE_TILE_SIZE, SQUARE_TILE_SIZE);
     tile_texture pirateShipTile("./texture/pirate-ship-4-perspectives-transparent.png", 4, 4, square, SQUARE_TILE_SIZE, SQUARE_TILE_SIZE);
     //timer maintains an update rate of 60Hz max
     timer t(60);
+    world_map world(DIAMOND_TILE_WIDTH, DIAMOND_TILE_HEIGHT, &t);
     while (!glfwWindowShouldClose(window))
     {
         t.update();
         processInput(window);
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-        avalonTile.draw(tileID{line : 3, column : 3}, NDC{x : 0, y : 0});
-        ghostShipTile.draw(tileID{line : 1, column : 0}, NDC{x : 0.5f, y : 0});
-        ghostShipTile.draw(tileID{line : 3, column : 3}, NDC{x : -0.5f, y : 0});
-        pirateShipTile.draw(tileID{line : 1, column : 3}, NDC{x : 0, y : -0.5f});
-        pirateShipTile.draw(tileID{line : 3, column : 3}, NDC{x : 0, y : 0.5f});
+        world.draw(world_coordinates{10.0f, 50.0f});
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
