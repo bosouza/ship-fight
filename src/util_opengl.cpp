@@ -116,3 +116,8 @@ unsigned int createAndBindVAO()
     glBindVertexArray(VAO);
     return VAO;
 }
+
+void bindViewport(viewport v)
+{
+    glViewport(v.lowerLeftCorner.first, v.lowerLeftCorner.second, v.width, v.height);
+}
