@@ -15,13 +15,14 @@ typedef enum
 class tile_texture : public drawable_component
 {
 private:
-    int tileWidth, tileHeight, wQtd, hQtd;
+    int tileWidth, tileHeight;
     texture tex;
     tile_shader *shader;
     unsigned int textureID;
     tileID currentTile;
 
 public:
+    int wQtd, hQtd;
     // path is the path for the image to be loaded, wQtd and hQtd are the
     // number of tiles along the width and height lengths, respectively.
     // s is the shape to be drawn

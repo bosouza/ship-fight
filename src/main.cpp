@@ -13,6 +13,7 @@
 #include <bullet.h>
 #include <ship.h>
 #include <ship_sprite.h>
+#include <explosion.h>
 
 #define WINDOW_WIDTH 1000
 #define WINDOW_HEIGHT 500
@@ -31,6 +32,8 @@
 #define HIT_DISTANCE 0.3f
 //no animation, our ship textures are too garbage for that
 #define SHIP_ANIMATION_PERIOD 0
+#define EXPLOSION_SIZE 0.15f
+#define BULLET_EXPLOSION_PERIOD 0.01f
 
 using namespace std;
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
@@ -49,7 +52,7 @@ viewport viewports[] = {
     }};
 
 ship player[] = {ship(12, 9, 0, 0, 0, SHIP_LIVES),
-                 ship(0, 0, 0, 0, 0, SHIP_LIVES)};
+                 ship(11, 8, 0, 0, 0, SHIP_LIVES)};
 unsigned int playerAction[] = {0, 0};
 press_event buttons[2];
 
@@ -87,10 +90,12 @@ int main()
     timer t(60);
     ship_sprite ghostShip("./texture/ghost-ship-4-perspectives-transparent.png", 4, 4, SQUARE_TILE_SIZE, SQUARE_TILE_SIZE, SHIP_ANIMATION_PERIOD, &t);
     ship_sprite pirateShip("./texture/pirate-ship-4-perspectives-transparent.png", 4, 4, SQUARE_TILE_SIZE, SQUARE_TILE_SIZE, SHIP_ANIMATION_PERIOD, &t);
+    tile_texture bulletExplosionTile("./texture/explosion-bullet.png", 4, 4, square, EXPLOSION_SIZE, EXPLOSION_SIZE);
     tile_texture bulletTile("./texture/cannon-ball.png", 1, 1, square, BULLET_SIZE, BULLET_SIZE);
     bulletTile.setTile(tileID{0, 0});
     //timer maintains an update rate of 60Hz max
     list<bullet> bullets;
+    list<explosion> explosions;
     world_map world(DIAMOND_TILE_WIDTH, DIAMOND_TILE_HEIGHT, &t);
     while (!glfwWindowShouldClose(window))
     {
@@ -130,12 +135,25 @@ int main()
             if (isClose(bulletI->position, player[bulletI->player == 0 ? 1 : 0].position, HIT_DISTANCE))
             {
                 cout << "ship hit" << endl;
-                // explosions.push_back(explosion(bulletI->position, &explosionBulletSprite, explosionBulletVAO, EXPLOSION_BULLET_FRAME_PERIOD));
+                explosions.push_back(explosion(bulletI->position, &bulletExplosionTile, BULLET_EXPLOSION_PERIOD, &t));
                 player[bulletI->player == 0 ? 1 : 0].hit();
                 bulletI = bullets.erase(bulletI);
                 continue;
             }
             ++bulletI;
+        }
+
+        // update explosions
+        auto explosionI = explosions.begin();
+        while (explosionI != explosions.end())
+        {
+            if (explosionI->isDone())
+            {
+                cout << "removing explosion" << endl;
+                explosionI = explosions.erase(explosionI);
+                continue;
+            }
+            ++explosionI;
         }
 
         //DEBUG: remove background color once we don't need it anymore
@@ -174,6 +192,16 @@ int main()
             for (auto bulletI = bullets.begin(); bulletI != bullets.end(); bulletI++)
             {
                 world.draw(player[i].position, bulletI->position, &bulletTile);
+            }
+        }
+
+        //draw explosions
+        for (int i = 0; i < 2; i++)
+        {
+            bindViewport(viewports[i]);
+            for (auto explosionI = explosions.begin(); explosionI != explosions.end(); explosionI++)
+            {
+                world.draw(player[i].position, explosionI->pos, &(*explosionI));
             }
         }
 
