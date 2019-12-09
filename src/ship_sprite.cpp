@@ -13,7 +13,7 @@ ship_sprite::ship_sprite(std::string path, int frameQtd, int actionQtd, float wi
 
 void ship_sprite::bindAction(unsigned int action)
 {
-    if (action < 0 || action > 3)
+    if (action < 0 || action >= this->actionQtd)
     {
         std::cout << "the action should be 0, 1, 2 or 3. The action " << action << " doesn't exist." << std::endl;
         throw;
