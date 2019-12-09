@@ -25,7 +25,7 @@
 
 #define PI 3.1415f
 #define SHIP_SPEED 3
-#define SHIP_LIVES 10
+#define SHIP_LIVES 5
 #define BULLET_SPEED 15
 #define BULLET_TRAVEL_DISTANCE 10
 #define BULLET_SIZE 0.05f
@@ -106,6 +106,8 @@ int main()
         //update player's position
         for (int i = 0; i < 2; i++)
         {
+            if (player[i].sinked)
+                continue;
             ship pCopy = player[i];
             player[i].step(t.getElapsedTime());
             if (!world.isNavigable(player[i].position))
@@ -170,17 +172,25 @@ int main()
         for (int i = 0; i < 2; i++)
         {
             bindViewport(viewports[i]);
-            if (i == 0)
+            if (!player[i].sinked)
             {
-                ghostShip.bindAction(playerAction[0]);
-                ghostShip.draw(NDC{0, 0});
-                world.draw(player[0].position, player[1].position, &pirateShip);
+                if (i == 0)
+                {
+                    ghostShip.bindAction(playerAction[0]);
+                    ghostShip.draw(NDC{0, 0});
+                }
+                else
+                {
+                    pirateShip.bindAction(playerAction[1]);
+                    pirateShip.draw(NDC{0, 0});
+                }
             }
-            else
+            if (!player[i == 0 ? 1 : 0].sinked)
             {
-                pirateShip.bindAction(playerAction[1]);
-                pirateShip.draw(NDC{0, 0});
-                world.draw(player[1].position, player[0].position, &ghostShip);
+                if (i == 0)
+                    world.draw(player[0].position, player[1].position, &pirateShip);
+                else
+                    world.draw(player[1].position, player[0].position, &ghostShip);
             }
         }
 
