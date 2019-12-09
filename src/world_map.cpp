@@ -45,3 +45,10 @@ NDC world_map::worldToNDC(world_coordinates center, world_coordinates pos)
     glm::vec2 res = this->worldToNDCmat * glm::vec2(pos.x - center.x, pos.y - center.y);
     return NDC{res[0], res[1]};
 }
+
+bool world_map::isNavigable(world_coordinates pos)
+{
+    tileID tile = this->map.getXY(pos.x, pos.y);
+    tileProperties p = map.getProperties(tile);
+    return p.isNavigable;
+}

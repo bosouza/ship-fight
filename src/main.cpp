@@ -51,8 +51,8 @@ viewport viewports[] = {
         height : WINDOW_HEIGHT,
     }};
 
-ship player[] = {ship(12, 9, 0, 0, 0, SHIP_LIVES),
-                 ship(11, 8, 0, 0, 0, SHIP_LIVES)};
+ship player[] = {ship(15, 15, 0, 0, 0, SHIP_LIVES),
+                 ship(20, 20, 0, 0, 0, SHIP_LIVES)};
 unsigned int playerAction[] = {0, 0};
 press_event buttons[2];
 
@@ -104,9 +104,12 @@ int main()
         processInput(window);
 
         //update player's position
-        for (auto &p : player)
+        for (int i = 0; i < 2; i++)
         {
-            p.step(t.getElapsedTime());
+            ship pCopy = player[i];
+            player[i].step(t.getElapsedTime());
+            if (!world.isNavigable(player[i].position))
+                player[i] = pCopy;
         }
 
         // add new bullets
@@ -114,7 +117,6 @@ int main()
         {
             if (buttons[i].pressEvent())
             {
-                cout << "adding bullet" << endl;
                 if (player[i].sinked)
                     continue;
                 bullets.push_back(bullet(player[i].position.x, player[i].position.y, BULLET_SPEED, player[i].angle, 0, i, BULLET_TRAVEL_DISTANCE));
@@ -128,13 +130,11 @@ int main()
             bulletI->step(t.getElapsedTime());
             if (!bulletI->isAlive())
             {
-                cout << "removing bullet" << endl;
                 bulletI = bullets.erase(bulletI);
                 continue;
             }
             if (isClose(bulletI->position, player[bulletI->player == 0 ? 1 : 0].position, HIT_DISTANCE))
             {
-                cout << "ship hit" << endl;
                 explosions.push_back(explosion(bulletI->position, &bulletExplosionTile, BULLET_EXPLOSION_PERIOD, &t));
                 player[bulletI->player == 0 ? 1 : 0].hit();
                 bulletI = bullets.erase(bulletI);
@@ -149,7 +149,6 @@ int main()
         {
             if (explosionI->isDone())
             {
-                cout << "removing explosion" << endl;
                 explosionI = explosions.erase(explosionI);
                 continue;
             }

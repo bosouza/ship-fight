@@ -22,6 +22,7 @@ public:
     ~world_map(){};
     void draw(world_coordinates center);
     void draw(world_coordinates center, world_coordinates pos, drawable_component *toDraw);
+    bool isNavigable(world_coordinates pos);
 };
 
 #endif

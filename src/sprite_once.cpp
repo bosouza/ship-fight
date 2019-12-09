@@ -9,7 +9,6 @@ sprite_once::sprite_once(tile_texture *tex, float period, timer *t)
     this->done = false;
     this->creationTime = t->getTime();
     this->tex = tex;
-    std::cout << "created" << std::endl;
 }
 
 void sprite_once::draw(NDC pos)
@@ -23,7 +22,7 @@ void sprite_once::draw(NDC pos)
     // std::cout << "this->period: " << this->period << " this->tex->wQtd: " << this->tex->wQtd << " this->tex->hQtd: " << this->tex->hQtd << std::endl;
     if (done || (elapsedTime > animationPeriod))
     {
-        std::cout << "done" << std::endl;
+        // std::cout << "done" << std::endl;
         done = true;
         return;
     }
