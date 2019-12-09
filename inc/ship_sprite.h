@@ -2,8 +2,10 @@
 #define SHIP_SPRITE_H_INCLUDED
 #include <timer.h>
 #include <tile_texture.h>
+#include <drawable_compenent.h>
 #include <string>
-class ship_sprite
+
+class ship_sprite : public drawable_component
 {
 private:
     tile_texture tex;
@@ -12,6 +14,7 @@ private:
     timer *t;
     int frameQtd;
     int actionQtd;
+
 public:
     ship_sprite(std::string path, int frameQtd, int actionQtd, float width, float height, float period, timer *t);
     void bindAction(unsigned int action);

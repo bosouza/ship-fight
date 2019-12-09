@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <tile_map.h>
 #include <common.h>
+#include <drawable_compenent.h>
 
 class world_map
 {
@@ -13,12 +14,14 @@ private:
     unsigned int diagonalQtd;
     tile_texture tile;
     tile_map map;
-    glm::mat2 worldToNDC;
+    glm::mat2 worldToNDCmat;
+    NDC worldToNDC(world_coordinates center, world_coordinates pos);
 
 public:
     world_map(float tileWidth, float tileHeight, timer *t);
     ~world_map(){};
     void draw(world_coordinates center);
+    void draw(world_coordinates center, world_coordinates pos, drawable_component *toDraw);
 };
 
 #endif
