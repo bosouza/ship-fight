@@ -8,6 +8,7 @@ ship_sprite::ship_sprite(std::string path, int frameQtd, int actionQtd, float wi
     this->t = t;
     this->frameQtd = frameQtd;
     this->period = period;
+   this->actionQtd = actionQtd;
 }
 
 void ship_sprite::bindAction(unsigned int action)
