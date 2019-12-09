@@ -4,8 +4,8 @@
 
 world_map::world_map(float tileWidth, float tileHeight, timer *t)
     : tile("./texture/avalon.png", 27, 24, diamond, tileWidth, tileHeight),
-      worldToNDC(tileWidth / 2, -tileHeight / 2,
-                 tileWidth / 2, tileHeight / 2),
+      worldToNDCmat(tileWidth / 2, -tileHeight / 2,
+                    tileWidth / 2, tileHeight / 2),
       map(t)
 
 {
@@ -13,29 +13,42 @@ world_map::world_map(float tileWidth, float tileHeight, timer *t)
     this->tileHeight = tileHeight;
     float hyp = std::sqrt((tileWidth / 2) * (tileWidth / 2) + (tileHeight / 2) * (tileHeight / 2));
     //we'll be drawing some tiles that fall well outside the viewport, but mehh
-    this->diagonalQtd = 2 * std::sqrt(2.0f) / hyp;
+    // this->diagonalQtd = 2 * std::sqrt(2.0f) / hyp;
+    this->diagonalQtd = 3 * std::sqrt(2.0f) / hyp;
 }
 
 void world_map::draw(world_coordinates center)
 {
-    float fractionalX = std::modf(center.x, nullptr);
-    float fractionalY = std::modf(center.y, nullptr);
-    // we have to draw it centered (i.e. draw centered in [0,0] if the center position
-    // received is in the center of the tile)
-    fractionalX -= 0.5f;
-    fractionalY -= 0.5f;
-    int startIndex = -std::ceil((float)this->diagonalQtd / 2.0f);
-    int endIndex = std::ceil((float)this->diagonalQtd / 2.0f);
-    for (int x = startIndex; x < endIndex; x++)
+    int viewRadius = std::ceil((float)this->diagonalQtd / 2.0f);
+    for (int x = std::max((int)center.x - viewRadius, 0);
+         x < std::min((int)center.x + viewRadius, (int)map.getWidth());
+         x += 1)
     {
-        if (center.x + x < 0 || center.x + x >= map.getWidth())
-            continue;
-        for (int y = startIndex; y < endIndex; y++)
+        for (int y = std::max((int)center.y - viewRadius, 0);
+             y < std::min((int)center.y + viewRadius, (int)map.getHeight());
+             y += 1)
         {
-            if (center.y + y < 0 || center.y + y >= map.getHeight())
-                continue;
-            glm::vec2 offset = this->worldToNDC * glm::vec2(x - fractionalX, y - fractionalY);
-            this->tile.draw(map.getXY(center.x + x, center.y + y), NDC{x : offset[0], y : offset[1]});
+            NDC targetPos = this->worldToNDC(center, world_coordinates{(float)x, (float)y});
+            this->tile.draw(map.getXY(x, y), targetPos);
         }
     }
+}
+
+void world_map::draw(world_coordinates center, world_coordinates pos, drawable_component *toDraw)
+{
+    NDC targetPos = this->worldToNDC(center, pos);
+    toDraw->draw(targetPos);
+}
+
+NDC world_map::worldToNDC(world_coordinates center, world_coordinates pos)
+{
+    glm::vec2 res = this->worldToNDCmat * glm::vec2(pos.x - center.x, pos.y - center.y);
+    return NDC{res[0], res[1]};
+}
+
+bool world_map::isNavigable(world_coordinates pos)
+{
+    tileID tile = this->map.getXY(pos.x, pos.y);
+    tileProperties p = map.getProperties(tile);
+    return p.isNavigable;
 }

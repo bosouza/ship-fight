@@ -28,6 +28,7 @@ tile_texture::tile_texture(std::string path, int wQtd, int hQtd, shape s, float 
     this->hQtd = hQtd;
     this->tileWidth = this->tex.getWidth() / wQtd;
     this->tileHeight = this->tex.getHeight() / hQtd;
+    this->currentTile = tileID{0, 0};
 
     this->shader = &tile_shader::get_instance();
     texture_mapping textureMapping = createTextureMapping(1.0f / (float)this->wQtd, 1.0f / (float)this->hQtd);
@@ -48,13 +49,24 @@ tile_texture::tile_texture(std::string path, int wQtd, int hQtd, shape s, float 
 
 void tile_texture::draw(tileID tile, NDC pos)
 {
-    if (tile.column >= this->wQtd)
+    this->setTile(tile);
+    this->draw(pos);
+}
+
+void tile_texture::setTile(tileID tile)
+{
+    this->currentTile = tile;
+}
+
+void tile_texture::draw(NDC pos)
+{
+    if (this->currentTile.column >= this->wQtd)
         throw "tried to draw a tile column outside the texture range\n";
-    if (tile.line >= this->hQtd)
+    if (this->currentTile.line >= this->hQtd)
         throw "tried to draw a tile line outside the texture range\n";
     this->shader->setOriginPosition(pos);
-    float tileBottomLeftCornerX = tile.column * this->tileWidth;
-    float tileBottomLeftCornerY = (this->hQtd - tile.line - 1) * this->tileHeight;
+    float tileBottomLeftCornerX = this->currentTile.column * this->tileWidth;
+    float tileBottomLeftCornerY = (this->hQtd - this->currentTile.line - 1) * this->tileHeight;
     this->shader->setTextureOffsetX((float)tileBottomLeftCornerX / (float)this->tex.getWidth());
     this->shader->setTextureOffsetY((float)tileBottomLeftCornerY / (float)this->tex.getHeight());
     this->shader->bindTexture(this->textureID);

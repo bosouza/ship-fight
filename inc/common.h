@@ -26,4 +26,6 @@ struct texture_mapping
     NDC bottom_right;
 };
 
+bool isClose(world_coordinates a, world_coordinates b, float distance);
+
 #endif

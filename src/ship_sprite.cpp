@@ -9,13 +9,14 @@ ship_sprite::ship_sprite(std::string path, int frameQtd, int actionQtd, float wi
     this->frameQtd = frameQtd;
     this->period = period;
     this->actionQtd = actionQtd;
+    this->currentAction = 1;
 }
 
 void ship_sprite::bindAction(unsigned int action)
 {
     if (action < 0 || action >= this->actionQtd)
     {
-        std::cout << "the action should be 0, 1, 2 or 3. The action " << action << " doesn't exist." << std::endl;
+        std::cout << "the action " << action << " doesn't exist." << std::endl;
         throw;
     }
     else
@@ -24,10 +25,14 @@ void ship_sprite::bindAction(unsigned int action)
 
 void ship_sprite::draw(NDC pos)
 {
-    double elapsed = fmod(this->t->getTime(),this->period * this->frameQtd);
     unsigned int frame = 0;
-    while((elapsed = elapsed - this->period) >= 0){
-        frame++;
+    if (this->period != 0)
+    {
+        double elapsed = fmod(this->t->getTime(), this->period * this->frameQtd);
+        while ((elapsed = elapsed - this->period) >= 0)
+        {
+            frame++;
+        }
     }
-    this->tex.draw(tileID{frame, this->currentAction}, pos);
+    this->tex.draw(tileID{this->currentAction, frame}, pos);
 }
