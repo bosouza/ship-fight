@@ -9,6 +9,7 @@ ship_sprite::ship_sprite(std::string path, int frameQtd, int actionQtd, float wi
     this->frameQtd = frameQtd;
     this->period = period;
     this->actionQtd = actionQtd;
+    this->currentAction = 1;
 }
 
 void ship_sprite::bindAction(unsigned int action)
@@ -24,10 +25,11 @@ void ship_sprite::bindAction(unsigned int action)
 
 void ship_sprite::draw(NDC pos)
 {
-    double elapsed = fmod(this->t->getTime(),this->period * this->frameQtd);
+    double elapsed = fmod(this->t->getTime(), this->period * this->frameQtd);
     unsigned int frame = 0;
-    while((elapsed = elapsed - this->period) >= 0){
+    while ((elapsed = elapsed - this->period) >= 0)
+    {
         frame++;
     }
-    this->tex.draw(tileID{frame, this->currentAction}, pos);
+    this->tex.draw(tileID{this->currentAction, frame}, pos);
 }
