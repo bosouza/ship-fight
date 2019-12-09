@@ -11,7 +11,7 @@ private:
     float period;
     timer *t;
     int frameQtd;
-
+    int actionQtd
 public:
     ship_sprite(std::string path, int frameQtd, int actionQtd, float width, float height, float period, timer *t);
     void bindAction(unsigned int action);
